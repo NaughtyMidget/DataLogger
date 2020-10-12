@@ -19,6 +19,8 @@ OneWire oneWire(localConf.soilSensor.oneWirePort);
 DallasTemperature soilSensor(&oneWire);
 
 SHT21 airSensor;
+
+PID myPID(&sensorData.soilTemp, &localConf.heater.heatingValue, &localConf.heater.heatingSetPoint, localConf.heater.consKp, localConf.heater.consKi, localConf.heater.consKd, DIRECT);
 Monotub myMonoTub;
 
 void setup()
@@ -29,6 +31,8 @@ void setup()
   soilSensor.begin();
   pinMode(localConf.humidifier.humi, OUTPUT);
   pinMode(localConf.humidifier.humiFan, OUTPUT);
+  myPID.SetMode(AUTOMATIC);
+
 }
 
 void loop()
@@ -40,8 +44,15 @@ void loop()
   Serial.println(sensorData.airHumidity);
   Serial.println(sensorData.soilTemp);
   Serial.println("==================");
+
   if (sensorData.airHumidity >= 0) {
     myMonoTub.HumidifierRun(&humidifierData, &sensorData);
+  }
+  else{
+    myMonoTub.stop();
+  }
+  if(sensorData.soilTemp >= 0){
+    myMonoTub.HeaterRun(&myPID, &sensorData);
   }
   else{
     myMonoTub.stop();

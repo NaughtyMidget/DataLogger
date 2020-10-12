@@ -89,10 +89,39 @@ void Monotub::HumidifierRun(humidifierVar* pRh, measurement* pMes)
       }
     }
 }
-
+void Monotub::HumidifierStop(configu* pConf)
+{
+  digitalWrite(_configGeneral.humidifier.humi,LOW);
+  digitalWrite(_configGeneral.humidifier.humiFan,LOW);
+}
 void Monotub::stop()
 {
   Serial.println("Monotub is stopping");
   delay(1000);
 
+}
+
+void Monotub::HeaterRun(PID* aPID, measurement* pMeas)
+{
+  if(_configGeneral.heater.En == 1)
+  {
+      double gap = abs(_configGeneral.heater.heatingSetPoint - pMeas->soilTemp);
+
+      if(gap<_configGeneral.heater.heaterGap)
+      {
+        aPID->SetTunings(_configGeneral.heater.consKp, _configGeneral.heater.consKi, _configGeneral.heater.consKd);
+      }
+      else
+      {
+        aPID->SetTunings(_configGeneral.heater.aggKp, _configGeneral.heater.aggKi, _configGeneral.heater.aggKd);
+      }
+
+      aPID->Compute();
+      analogWrite(_configGeneral.heater.heaterPin, _configGeneral.heater.heatingValue);
+  }
+}
+
+void Monotub::HeaterStop()
+{
+  analogWrite(_configGeneral.heater.heaterPin, 0);
 }
