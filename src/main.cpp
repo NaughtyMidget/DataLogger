@@ -2,7 +2,7 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include "SHT21.h"
-
+#include <PID_v1.h>
 configu localConf =
 {
   {9600, 0}, //int baudRate;  int debugSerial; **
@@ -13,6 +13,8 @@ configu localConf =
   //{{192, 168, 1, 13}, 80, {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xEF}}
 };
 measurement sensorData = {0.0, 0.0, 0.0};
+humidifierVar humidifierData = {LOW, LOW, 0, 0, 0};
+
 OneWire oneWire(localConf.soilSensor.oneWirePort);
 DallasTemperature soilSensor(&oneWire);
 
@@ -25,13 +27,24 @@ void setup()
   Serial.begin(localConf.serial.baudRate);
   Wire.begin();
   soilSensor.begin();
+  pinMode(localConf.humidifier.humi, OUTPUT);
+  pinMode(localConf.humidifier.humiFan, OUTPUT);
 }
 
 void loop()
 {
   sensorData.airTemp = myMonoTub.getAirTemp(&airSensor);
-  sensorData.airHumidity =myMonoTub.getAirHumidity(&airSensor);
+  sensorData.airHumidity = myMonoTub.getAirHumidity(&airSensor);
   sensorData.soilTemp = myMonoTub.getSoilTemp(&soilSensor);
+  Serial.println(sensorData.airTemp);
+  Serial.println(sensorData.airHumidity);
   Serial.println(sensorData.soilTemp);
+  Serial.println("==================");
+  if (sensorData.airHumidity >= 0) {
+    myMonoTub.HumidifierRun(&humidifierData, &sensorData);
+  }
+  else{
+    myMonoTub.stop();
+  }
 
 }

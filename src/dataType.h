@@ -53,3 +53,11 @@ struct measurement{
   float airHumidity;
   double soilTemp;
 };
+struct humidifierVar{
+  bool flip;
+  int humidifierState;
+  int humidifierFanState;
+  long previousTime;
+  long previousMillisDuration;
+  long currentTime;
+};
