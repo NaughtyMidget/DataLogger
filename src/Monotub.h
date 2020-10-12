@@ -11,6 +11,10 @@ class Monotub
 {
   public:
     void loadConfig(configu aConf);
+    float getSoilTemp(DallasTemperature* pSoilSensor);
+    float getAirTemp(SHT21* pAirSensor);
+    float getAirHumidity(SHT21* pAirSensor);
+
     int runAll(SHT21* pAirSensor, DallasTemperature* pSoilSensor);
     void stop();
   private:

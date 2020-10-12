@@ -2,8 +2,6 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include "SHT21.h"
-//#include "dataType.h"
-
 
 configu localConf =
 {
@@ -14,7 +12,7 @@ configu localConf =
   {1, 50, 6},//int enable;  int tempo;  int oneWirePort;
   //{{192, 168, 1, 13}, 80, {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xEF}}
 };
-
+measurement sensorData = {0.0, 0.0, 0.0};
 OneWire oneWire(localConf.soilSensor.oneWirePort);
 DallasTemperature soilSensor(&oneWire);
 
@@ -31,9 +29,9 @@ void setup()
 
 void loop()
 {
-  int Error = 0;
-  // put your main code here, to run repeatedly:
-  Error = myMonoTub.runAll(&airSensor, &soilSensor);
-  if(Error != 0)
-    Serial.println("Error occured");
+  sensorData.airTemp = myMonoTub.getAirTemp(&airSensor);
+  sensorData.airHumidity =myMonoTub.getAirHumidity(&airSensor);
+  sensorData.soilTemp = myMonoTub.getSoilTemp(&soilSensor);
+  Serial.println(sensorData.soilTemp);
+
 }
