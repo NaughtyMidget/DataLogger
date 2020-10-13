@@ -4,10 +4,9 @@
 #include "SHT21.h"
 #include <PID_v1.h>
 #include <Wire.h>
-#include "DS1307.h"
-
 
 configu localConf =
+
 {
   {9600, 0}, //int baudRate;  int debugSerial; **
   {1, 2, 3, 10000, 30000, 90.0, 5.0, 0}, //int En; int humiFan;  int humi;  long tOn;  long tOff;  float humiSetPoint;  float humiTolerance;  int humidifierMode;
@@ -26,8 +25,6 @@ SHT21 airSensor;
 
 PID myPID(&sensorData.soilTemp, &localConf.heater.heatingValue, &localConf.heater.heatingSetPoint, localConf.heater.consKp, localConf.heater.consKi, localConf.heater.consKd, DIRECT);
 
-DS1307 onBoardClock;
-
 Monotub myMonoTub;
 
 void setup()
@@ -36,16 +33,12 @@ void setup()
   Serial.begin(localConf.serial.baudRate);
   Wire.begin();
   soilSensor.begin();
-  onBoardClock.begin();
-  onBoardClock.fillByHMS(17,9,1);
-  onBoardClock.fillByYMD(2020, 10, 12);
-  onBoardClock.setTime();//write time to the RTC chip
 
   pinMode(localConf.humidifier.humi, OUTPUT);
   pinMode(localConf.humidifier.humiFan, OUTPUT);
   myPID.SetMode(AUTOMATIC);
 
-
+  
 }
 
 void loop()
@@ -59,7 +52,7 @@ void loop()
   Serial.println("==================");
 
   if (sensorData.airHumidity >= 0) {
-    myMonoTub.HumidifierRun(&humidifierData, &sensorData);
+    myMonoTub.humidifierRun(&humidifierData, &sensorData);
   }
   else{
     myMonoTub.stop();
@@ -70,6 +63,4 @@ void loop()
   else{
     myMonoTub.stop();
   }
-  Serial.println("====RTC--Minute=====");
-  Serial.println(onBoardClock.minute);
 }

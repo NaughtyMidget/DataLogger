@@ -48,7 +48,7 @@ int Monotub::runAll(SHT21* pAirSensor, DallasTemperature* pSoilSensor)
   return 0;
 }
 
-void Monotub::HumidifierRun(humidifierVar* pRh, measurement* pMes)
+void Monotub::humidifierRun(humidifierVar* pRh, measurement* pMes)
 {
     if(_configGeneral.humidifier.En == 1)
     {
@@ -89,7 +89,7 @@ void Monotub::HumidifierRun(humidifierVar* pRh, measurement* pMes)
       }
     }
 }
-void Monotub::HumidifierStop(configu* pConf)
+void Monotub::humidifierStop(configu* pConf)
 {
   digitalWrite(_configGeneral.humidifier.humi,LOW);
   digitalWrite(_configGeneral.humidifier.humiFan,LOW);

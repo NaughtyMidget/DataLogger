@@ -15,8 +15,8 @@ class Monotub
     float getSoilTemp(DallasTemperature* pSoilSensor);
     float getAirTemp(SHT21* pAirSensor);
     float getAirHumidity(SHT21* pAirSensor);
-    void HumidifierRun(humidifierVar* pRh, measurement* pMes);
-    void HumidifierStop(configu* pConf);
+    void humidifierRun(humidifierVar* pRh, measurement* pMes);
+    void humidifierStop(configu* pConf);
     void HeaterRun(PID* aPID, measurement* pMeas);
     void HeaterStop();
 
