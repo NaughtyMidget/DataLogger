@@ -4,9 +4,10 @@
 #include "SHT21.h"
 #include <PID_v1.h>
 #include <Wire.h>
+#include "DS1307.h"
+//extern TwoWire Wire1;
 
 configu localConf =
-
 {
   {9600, 0}, //int baudRate;  int debugSerial; **
   {1, 2, 3, 10000, 30000, 90.0, 5.0, 0}, //int En; int humiFan;  int humi;  long tOn;  long tOff;  float humiSetPoint;  float humiTolerance;  int humidifierMode;
@@ -24,7 +25,7 @@ DallasTemperature soilSensor(&oneWire);
 SHT21 airSensor;
 
 PID myPID(&sensorData.soilTemp, &localConf.heater.heatingValue, &localConf.heater.heatingSetPoint, localConf.heater.consKp, localConf.heater.consKi, localConf.heater.consKd, DIRECT);
-
+DS1307 rtc(SDA1, SCL1);
 Monotub myMonoTub;
 
 void setup()
@@ -37,8 +38,10 @@ void setup()
   pinMode(localConf.humidifier.humi, OUTPUT);
   pinMode(localConf.humidifier.humiFan, OUTPUT);
   myPID.SetMode(AUTOMATIC);
+  rtc.begin();
+  rtc.halt(false);
 
-  
+
 }
 
 void loop()
@@ -46,9 +49,13 @@ void loop()
   sensorData.airTemp = myMonoTub.getAirTemp(&airSensor);
   sensorData.airHumidity = myMonoTub.getAirHumidity(&airSensor);
   sensorData.soilTemp = myMonoTub.getSoilTemp(&soilSensor);
-  Serial.println(sensorData.airTemp);
-  Serial.println(sensorData.airHumidity);
-  Serial.println(sensorData.soilTemp);
+  String hour = rtc.getTimeStr();
+  String tempMeas = hour + " Air temperature: " + sensorData.airTemp;
+  Serial.println(tempMeas);
+  String airRhMeas = hour + " Air Humidity : " + sensorData.airHumidity;
+  Serial.println(airRhMeas);
+  String soilMeas = hour + " Soil temperature :" + sensorData.soilTemp;
+  Serial.println(soilMeas);
   Serial.println("==================");
 
   if (sensorData.airHumidity >= 0) {
@@ -63,4 +70,5 @@ void loop()
   else{
     myMonoTub.stop();
   }
+
 }
