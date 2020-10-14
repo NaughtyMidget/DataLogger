@@ -5,8 +5,10 @@
 #include <PID_v1.h>
 #include <Wire.h>
 #include "DS1307.h"
-//extern TwoWire Wire1;
+#include <SPI.h>
+#include <SD.h>
 
+const int chipSelect = 10;
 configu localConf =
 {
   {9600, 0}, //int baudRate;  int debugSerial; **
@@ -26,6 +28,7 @@ SHT21 airSensor;
 
 PID myPID(&sensorData.soilTemp, &localConf.heater.heatingValue, &localConf.heater.heatingSetPoint, localConf.heater.consKp, localConf.heater.consKi, localConf.heater.consKd, DIRECT);
 DS1307 rtc(SDA1, SCL1);
+
 Monotub myMonoTub;
 
 void setup()
@@ -41,6 +44,15 @@ void setup()
   rtc.begin();
   rtc.halt(false);
 
+  Serial.print("Initializing SD card...");
+
+  // see if the card is present and can be initialized:
+  if (!SD.begin(chipSelect)) {
+    Serial.println("Card failed, or not present");
+    // don't do anything more:
+    while (1);
+  }
+  Serial.println("card initialized.");
 
 }
 
@@ -49,14 +61,6 @@ void loop()
   sensorData.airTemp = myMonoTub.getAirTemp(&airSensor);
   sensorData.airHumidity = myMonoTub.getAirHumidity(&airSensor);
   sensorData.soilTemp = myMonoTub.getSoilTemp(&soilSensor);
-  String hour = rtc.getTimeStr();
-  String tempMeas = hour + " Air temperature: " + sensorData.airTemp;
-  Serial.println(tempMeas);
-  String airRhMeas = hour + " Air Humidity : " + sensorData.airHumidity;
-  Serial.println(airRhMeas);
-  String soilMeas = hour + " Soil temperature :" + sensorData.soilTemp;
-  Serial.println(soilMeas);
-  Serial.println("==================");
 
   if (sensorData.airHumidity >= 0) {
     myMonoTub.humidifierRun(&humidifierData, &sensorData);
@@ -70,5 +74,24 @@ void loop()
   else{
     myMonoTub.stop();
   }
+  String dataString = "";
+  String timeStamp = rtc.getTimeStr();
+
+  dataString = timeStamp + "," + sensorData.airHumidity;
+
+  File dataFile = SD.open("datalog.txt", FILE_WRITE);
+
+// if the file is available, write to it:
+  if (dataFile) {
+    dataFile.println(dataString);
+    dataFile.close();
+    // print to the serial port too:
+    Serial.println(dataString);
+  }
+  // if the file isn't open, pop up an error:
+  else {
+    Serial.println("error opening datalog.txt");
+  }
+
 
 }
