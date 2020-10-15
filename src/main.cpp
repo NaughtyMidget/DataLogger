@@ -16,6 +16,7 @@ configu localConf =
   {1, 10, 0, 25.0, 9.1, 0.3, 1.8, 9.1, 0.3, 1.8}, //  int En;  int heaterPin;  double heatingValue;  double heatingSetPoint;  double consKp;  double consKi;  double consKd;  double aggKp;  double aggKi;  double aggKd;
   {1, 50}, //int enable;  int tempo;
   {1, 50, 6},//int enable;  int tempo;  int oneWirePort;
+  {"DataLog_","csv"}
   //{{192, 168, 1, 13}, 80, {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xEF}}
 };
 measurement sensorData = {0.0, 0.0, 0.0};
@@ -28,7 +29,7 @@ SHT21 airSensor;
 
 PID myPID(&sensorData.soilTemp, &localConf.heater.heatingValue, &localConf.heater.heatingSetPoint, localConf.heater.consKp, localConf.heater.consKi, localConf.heater.consKd, DIRECT);
 DS1307 rtc(SDA1, SCL1);
-
+Datalogger myDataLogger(&localConf);
 Monotub myMonoTub;
 
 void setup()
@@ -58,6 +59,9 @@ void setup()
 
 void loop()
 {
+  myDataLogger.setFileNameToday(&rtc);
+  String date = rtc.getDateStr();
+  Serial.println(myDataLogger.getFileNameToday(date));
   sensorData.airTemp = myMonoTub.getAirTemp(&airSensor);
   sensorData.airHumidity = myMonoTub.getAirHumidity(&airSensor);
   sensorData.soilTemp = myMonoTub.getSoilTemp(&soilSensor);

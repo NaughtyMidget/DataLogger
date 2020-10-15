@@ -3,6 +3,7 @@
 Datalogger::Datalogger(configu *aConf){
   _configDataLogger = aConf->dataLogger;
 }
+
 int Datalogger::setFileNameToday(DS1307 *pRtc){
   String newDate = pRtc->getDateStr();
   if(_todayDate.length() != 0){
@@ -27,7 +28,7 @@ String Datalogger::getFileNameToday(String date){
   return fileName;
 }
 
-int Datalogger::saveMeasureToSd(measurement mes2Save){
+/*int Datalogger::saveMeasureToSd(measurement mes2Save){
   int error = 0;
   String dataString = mes2Save.toString();
 
@@ -47,4 +48,4 @@ int Datalogger::saveMeasureToSd(measurement mes2Save){
     }
 
   return error;
-}
+}*/
