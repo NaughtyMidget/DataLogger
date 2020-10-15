@@ -3,7 +3,7 @@
 //#include <OneWire.h>
 #include <DallasTemperature.h>
 
-#include "dataType.h"
+#include "datatype.h"
 #include <Arduino.h>
 #include "SHT21.h"
 #include "PID_v1.h"

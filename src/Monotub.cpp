@@ -94,11 +94,11 @@ void Monotub::humidifierStop(configu* pConf)
   digitalWrite(_configGeneral.humidifier.humi,LOW);
   digitalWrite(_configGeneral.humidifier.humiFan,LOW);
 }
+
 void Monotub::stop()
 {
   Serial.println("Monotub is stopping");
   delay(1000);
-
 }
 
 void Monotub::HeaterRun(PID* aPID, measurement* pMeas)
@@ -115,7 +115,6 @@ void Monotub::HeaterRun(PID* aPID, measurement* pMeas)
       {
         aPID->SetTunings(_configGeneral.heater.aggKp, _configGeneral.heater.aggKi, _configGeneral.heater.aggKd);
       }
-
       aPID->Compute();
       analogWrite(_configGeneral.heater.heaterPin, _configGeneral.heater.heatingValue);
   }

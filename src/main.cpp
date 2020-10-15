@@ -7,7 +7,7 @@
 #include "DS1307.h"
 #include <SPI.h>
 #include <SD.h>
-
+#include "Datalogger.h"
 const int chipSelect = 10;
 configu localConf =
 {
@@ -74,24 +74,4 @@ void loop()
   else{
     myMonoTub.stop();
   }
-  String dataString = "";
-  String timeStamp = rtc.getTimeStr();
-
-  dataString = timeStamp + "," + sensorData.airHumidity;
-
-  File dataFile = SD.open("datalog.txt", FILE_WRITE);
-
-// if the file is available, write to it:
-  if (dataFile) {
-    dataFile.println(dataString);
-    dataFile.close();
-    // print to the serial port too:
-    Serial.println(dataString);
-  }
-  // if the file isn't open, pop up an error:
-  else {
-    Serial.println("error opening datalog.txt");
-  }
-
-
 }
