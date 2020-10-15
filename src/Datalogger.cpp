@@ -10,51 +10,83 @@ int Datalogger::setFileNameToday(DS1307 *pRtc){
   uint8_t fl = 1;
   char divider = '-';
   String newDate = pRtc->getDateStr(sl,fl,divider);
-  
+
   if(_todayDate.length() != 0){
+    //RTC has answered
     _todayDate = newDate;
   }
   if (!_todayDate.equals(newDate)) {
+    //the day has changed
     _todayDate = newDate;
     _fileNameToday = getFileNameToday(newDate);
   }
   return 0;
 }
 
-String Datalogger::getFileNameToday(){
+String Datalogger::getFileNameToday(String date){
   String fileName = "";
-
-  if(_configDataLogger.prefixFile.length()!=0 && _configDataLogger.fileExtension.length()!=0){
-    fileName = _configDataLogger.prefixFile + date + "-"+ _configDataLogger.fileExtension;
-  }
-  else{
-    fileName = "measurementLog"+ date +"-"+_configDataLogger.fileExtension;
+  if (_configDataLogger.enable) {
+    if(_configDataLogger.prefixFile.length()!=0 && _configDataLogger.fileExtension.length()!=0){
+      fileName = String(_configDataLogger.prefixFile + date + "." + _configDataLogger.fileExtension);
+    }
+    else{
+      fileName = String("measurementLog"+ date +"-"+_configDataLogger.fileExtension);
+    }
   }
   return fileName;
 }
 
-String Datalogger::TestGetDate(){
-  String Date = _pRtc->getDateStr();
-  return Date;
+void Datalogger::printDebug(){
+  String date2Print = "";
+  date2Print = _fileNameToday;
+  Serial.println(date2Print);
 }
-/*int Datalogger::saveMeasureToSd(measurement mes2Save){
+
+int Datalogger::saveMeasureToSd(measurement mes2Save){
   int error = 0;
   String dataString = mes2Save.toString();
+  int lString = _fileNameToday.length()+1;
+  char charArray[lString];
+  _fileNameToday.toCharArray(charArray,lString);
 
-    if (SD.exists(_fileNameToday)) {
-        File dataFile = SD.open(_fileNameToday,FILE_WRITE);
-        dataFile.println(dataString);
-        dataFile.close();
-      }
-
-  if (SD.exists(_fileNameToday)) {
-      File dataFile = SD.open(_fileNameToday,FILE_WRITE);
+  if (SD.exists(charArray)) {
+      Serial.println("open file");
+      File dataFile;
+      dataFile = SD.open(charArray,FILE_WRITE);
       dataFile.println(dataString);
       dataFile.close();
     }
+
   else {
-      Serial.println("error opening datalog");
+      Serial.println("save measure function");
+      String errorMsg = "can't open file : " + _fileNameToday;
+      Serial.println(errorMsg);
+      error = -1;
     }
 
   return error;
-}*/
+}
+
+int Datalogger::readFile2Serial(){
+  int error = 0;
+  int lString = _fileNameToday.length()+1;
+  char charArray[lString];
+  _fileNameToday.toCharArray(charArray,lString);
+  File myFile;
+
+  myFile = SD.open(charArray);
+  if (myFile) {
+    Serial.println("test.txt:");
+    while (myFile.available()) {
+      Serial.write(myFile.read());
+    }
+    myFile.close();
+  }
+  else {
+    String errorMsg = "can't open file : " + _fileNameToday;
+    Serial.println("read dataFile function");
+    Serial.println(errorMsg);
+    error = -1;
+    }
+  return error;
+}

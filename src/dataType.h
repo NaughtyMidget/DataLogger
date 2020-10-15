@@ -39,6 +39,7 @@ struct confSoilSensor{
   unsigned char oneWirePort;
 };
 struct confDatalogger{
+  bool enable;
   String prefixFile;
   String fileExtension;
 };
