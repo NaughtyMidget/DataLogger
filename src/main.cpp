@@ -48,11 +48,8 @@ void setup()
 
   Serial.print("Initializing SD card...");
 
-  // see if the card is present and can be initialized:
   if (!SD.begin(chipSelect)) {
     Serial.println("Card failed, or not present");
-    // don't do anything more:
-    while (1);
   }
   Serial.println("card initialized.");
 
@@ -61,8 +58,6 @@ void setup()
 void loop()
 {
   myDataLogger.setFileNameToday(&rtc);
-  String date = rtc.getDateStr();
-  Serial.println(myDataLogger.getFileNameToday(date));
   sensorData.airTemp = myMonoTub.getAirTemp(&airSensor);
   sensorData.airHumidity = myMonoTub.getAirHumidity(&airSensor);
   sensorData.soilTemp = myMonoTub.getSoilTemp(&soilSensor);

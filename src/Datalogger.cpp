@@ -2,11 +2,15 @@
 
 Datalogger::Datalogger(configu *aConf, DS1307 *pRtc){
   _configDataLogger = aConf->dataLogger;
-  _pRtc = &pRtc;
+  _pRtc = pRtc;
 }
 
 int Datalogger::setFileNameToday(DS1307 *pRtc){
-  String newDate = pRtc->getDateStr();
+  uint8_t sl = 1;
+  uint8_t fl = 1;
+  char divider = '-';
+  String newDate = pRtc->getDateStr(sl,fl,divider);
+  
   if(_todayDate.length() != 0){
     _todayDate = newDate;
   }
@@ -17,20 +21,21 @@ int Datalogger::setFileNameToday(DS1307 *pRtc){
   return 0;
 }
 
-String Datalogger::getFileNameToday(String date){
+String Datalogger::getFileNameToday(){
   String fileName = "";
 
   if(_configDataLogger.prefixFile.length()!=0 && _configDataLogger.fileExtension.length()!=0){
-    fileName = _configDataLogger.prefixFile + date + "."+ _configDataLogger.fileExtension;
+    fileName = _configDataLogger.prefixFile + date + "-"+ _configDataLogger.fileExtension;
   }
   else{
-    fileName = "measurementLog"+ date +"."+_configDataLogger.fileExtension;
+    fileName = "measurementLog"+ date +"-"+_configDataLogger.fileExtension;
   }
   return fileName;
 }
 
 String Datalogger::TestGetDate(){
-  String Date = **_pRtc->getDateStr();
+  String Date = _pRtc->getDateStr();
+  return Date;
 }
 /*int Datalogger::saveMeasureToSd(measurement mes2Save){
   int error = 0;
