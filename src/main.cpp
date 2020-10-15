@@ -57,7 +57,7 @@ void setup()
 
 void loop()
 {
-  myDataLogger.setFileNameToday(&rtc);
+  myDataLogger.setFileNameToday();
   //myDataLogger.printDebug();
   sensorData.airTemp = myMonoTub.getAirTemp(&airSensor);
   sensorData.airHumidity = myMonoTub.getAirHumidity(&airSensor);

@@ -5,12 +5,12 @@ Datalogger::Datalogger(configu *aConf, DS1307 *pRtc){
   _pRtc = pRtc;
 }
 
-int Datalogger::setFileNameToday(DS1307 *pRtc){
+int Datalogger::setFileNameToday(){
   if (_configDataLogger.enable) {
     uint8_t sl = 1;
     uint8_t fl = 1;
     char divider = '-';
-    String newDate = pRtc->getDateStr(sl,fl,divider);
+    String newDate = _pRtc->getDateStr(sl,fl,divider);
 
     if(_todayDate.length() != 0){
       //RTC has answered

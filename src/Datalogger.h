@@ -6,7 +6,7 @@ class Datalogger{
 
 public:
   Datalogger(configu *aConf, DS1307 *pRtc);
-  int setFileNameToday(DS1307 *pRtc);
+  int setFileNameToday();
   String getFileNameToday(String date);
   int saveMeasureToSd(measurement mes2Save);
   void printDebug();
