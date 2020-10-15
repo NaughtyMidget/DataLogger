@@ -1,7 +1,8 @@
   #include "Datalogger.h"
 
-Datalogger::Datalogger(configu *aConf){
+Datalogger::Datalogger(configu *aConf, DS1307 *pRtc){
   _configDataLogger = aConf->dataLogger;
+  _pRtc = &pRtc;
 }
 
 int Datalogger::setFileNameToday(DS1307 *pRtc){
@@ -28,6 +29,9 @@ String Datalogger::getFileNameToday(String date){
   return fileName;
 }
 
+String Datalogger::TestGetDate(){
+  String Date = **_pRtc->getDateStr();
+}
 /*int Datalogger::saveMeasureToSd(measurement mes2Save){
   int error = 0;
   String dataString = mes2Save.toString();

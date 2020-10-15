@@ -29,7 +29,8 @@ SHT21 airSensor;
 
 PID myPID(&sensorData.soilTemp, &localConf.heater.heatingValue, &localConf.heater.heatingSetPoint, localConf.heater.consKp, localConf.heater.consKi, localConf.heater.consKd, DIRECT);
 DS1307 rtc(SDA1, SCL1);
-Datalogger myDataLogger(&localConf);
+
+Datalogger myDataLogger(&localConf, &rtc);
 Monotub myMonoTub;
 
 void setup()
