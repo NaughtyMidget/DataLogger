@@ -40,8 +40,9 @@ struct confSoilSensor{
 };
 struct confDatalogger{
   bool enable;
-  String logName;
-  String fileExtension;
+  String fileLogExtension;
+  String fileErrExtension;
+  uint32_t sampleSavingRate;
 };
 /*struct confEthernet{
   int ipAdress[4];

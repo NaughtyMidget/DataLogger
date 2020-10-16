@@ -16,7 +16,7 @@ configu localConf =
   {1, 10, 0, 25.0, 9.1, 0.3, 1.8, 9.1, 0.3, 1.8}, //  int En;  int heaterPin;  double heatingValue;  double heatingSetPoint;  double consKp;  double consKi;  double consKd;  double aggKp;  double aggKi;  double aggKd;
   {1, 50}, //int enable;  int tempo;
   {1, 50, 6},//int enable;  int tempo;  int oneWirePort;
-  {1,"DataLog","txt"}
+  {1,"log","err", 10000},
   //{{192, 168, 1, 13}, 80, {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xEF}}
 };
 measurement sensorData = {0.0, 0.0, 0.0};
@@ -76,6 +76,4 @@ void loop()
   else{
     myMonoTub.stop();
   }
-  delay(1000);
-  myDataLogger.readFile2Serial();
 }

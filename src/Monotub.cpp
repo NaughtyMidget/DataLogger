@@ -1,5 +1,4 @@
 #include "Monotub.h"
-//#include "Measurement.h"
 #include "SHT21.h"
 
 
@@ -55,7 +54,6 @@ void Monotub::humidifierRun(humidifierVar* pRh, measurement* pMes)
       switch(_configGeneral.humidifier.humidifierMode)
       {
         case 0:
-            Serial.println("regul Humidifier mode 0");
             float outputDuration[2];
             outputDuration[0] = _configGeneral.humidifier.tOn;
             outputDuration[1] = _configGeneral.humidifier.tOff;
