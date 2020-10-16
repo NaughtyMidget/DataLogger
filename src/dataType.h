@@ -40,7 +40,7 @@ struct confSoilSensor{
 };
 struct confDatalogger{
   bool enable;
-  String prefixFile;
+  String logName;
   String fileExtension;
 };
 /*struct confEthernet{
@@ -64,7 +64,7 @@ struct measurement{
   double soilTemp;
   String toString()
   {
-    String meas = String(airTemp) + "," + String(airHumidity) + "," + String(soilTemp);
+    String meas = String(airTemp) + "," + String(airHumidity) + "," + String(soilTemp)+"\n";
     return meas;
   }
 };

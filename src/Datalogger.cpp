@@ -5,13 +5,13 @@ Datalogger::Datalogger(configu *aConf, DS1307 *pRtc){
   _pRtc = pRtc;
 }
 
+// test comment by gavin
 int Datalogger::setFileNameToday(){
   if (_configDataLogger.enable) {
     uint8_t sl = 1;
     uint8_t fl = 1;
     char divider = '-';
     String newDate = _pRtc->getDateStr(sl,fl,divider);
-
     if(_todayDate.length() != 0){
       //RTC has answered
       _todayDate = newDate;
@@ -26,33 +26,39 @@ int Datalogger::setFileNameToday(){
 }
 
 String Datalogger::getFileNameToday(String date){
+  /*
+ Note:
+ - maximum number of charactere for the file name : 8;
+ - maximum number of charatere for the extension : 3;
+  */
   String fileName = "";
   if (_configDataLogger.enable) {
-    if(_configDataLogger.prefixFile.length()!=0 && _configDataLogger.fileExtension.length()!=0){
-      fileName = String(_configDataLogger.prefixFile + date + "." + _configDataLogger.fileExtension);
+    if((_configDataLogger.logName.length()!=0&&_configDataLogger.logName.length()<=8) && (_configDataLogger.fileExtension.length()!=0&&_configDataLogger.fileExtension.length()<=3)){
+      fileName = String(_configDataLogger.logName + "." +_configDataLogger.fileExtension);
     }
     else{
-      fileName = String("measurementLog"+ date +"-"+_configDataLogger.fileExtension);
+      fileName = String("DataLog." + _configDataLogger.fileExtension);
     }
   }
   return fileName;
-}
-
-void Datalogger::printDebug(){
-  String date2Print = "";
-  date2Print = _fileNameToday;
-  Serial.println(date2Print);
 }
 
 int Datalogger::saveMeasureToSd(measurement mes2Save){
   int error = 0;
   if (_configDataLogger.enable) {
     //ajout timestamp
-    String dataString = mes2Save.toString();
+    String measurementString = mes2Save.toString();
+    String timesStamp = _pRtc->getTimeStr();
+    String dataString = timesStamp + "," +measurementString;
+
     int lString = _fileNameToday.length()+1;
     char charArray[lString];
     _fileNameToday.toCharArray(charArray,lString);
     File dataFile;
+
+
+    // Test comment from gavinok
+
     dataFile = SD.open(charArray,FILE_WRITE);
 
     if (dataFile) {
@@ -62,7 +68,7 @@ int Datalogger::saveMeasureToSd(measurement mes2Save){
       }
     else {
         Serial.println("save measure function");
-        String errorMsg = "can't open file : " + _fileNameToday;
+        String errorMsg = "can't open file : charArray ";
         Serial.println(errorMsg);
         error = -1;
       }
@@ -80,7 +86,7 @@ int Datalogger::readFile2Serial(){
 
     myFile = SD.open(charArray);
     if (myFile) {
-      Serial.println("test.txt:");
+      Serial.println("char Array.txt");
       while (myFile.available()) {
         Serial.write(myFile.read());
       }
