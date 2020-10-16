@@ -47,6 +47,7 @@ void Datalogger::printDebug(){
 int Datalogger::saveMeasureToSd(measurement mes2Save){
   int error = 0;
   if (_configDataLogger.enable) {
+    //ajout timestamp
     String dataString = mes2Save.toString();
     int lString = _fileNameToday.length()+1;
     char charArray[lString];
